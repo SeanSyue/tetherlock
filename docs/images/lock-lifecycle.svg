@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <title>Lifecycle of one protected area</title>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/>
+    </marker>
+    <style>
+      .h{font-size:20px;font-weight:700;fill:#0f172a}
+      .sub{font-size:14px;fill:#475569}
+      .st{fill:#f8fafc;stroke:#94a3b8;stroke-width:1.8}
+      .ask{fill:#ecfeff;stroke:#0e7490;stroke-width:1.8}
+      .open{fill:#f0fdf4;stroke:#15803d;stroke-width:1.8}
+      .T{font-size:20px;font-weight:700;fill:#0f172a}
+      .s{font-size:13px;fill:#334155}
+      .lab{font-size:13px;fill:#0f172a}
+      .labr{font-size:13px;fill:#b91c1c}
+      .n{font-size:12.5px;fill:#64748b;font-style:italic}
+      .ln{stroke:#475569;stroke-width:1.6;fill:none}
+      .lr{stroke:#b91c1c;stroke-width:1.6;fill:none}
+      .box{fill:none;stroke:#cbd5e1;stroke-width:1.5;stroke-dasharray:3 4}
+    </style>
+  </defs>
+  <rect width="1200" height="600" fill="#ffffff"/>
+
+  <text x="30" y="40" class="h">Lifecycle of one protected area</text>
+  <text x="30" y="64" class="sub">Each scope moves through these states on its own. Several scopes can be open at once, each tied to its own device.</text>
+
+  <!-- states -->
+  <rect x="60" y="150" width="230" height="110" rx="55" class="st"/>
+  <text x="175" y="198" text-anchor="middle" class="T">Locked</text>
+  <text x="175" y="222" text-anchor="middle" class="s">nothing protected is loaded</text>
+
+  <rect x="485" y="150" width="230" height="110" rx="55" class="ask"/>
+  <text x="600" y="198" text-anchor="middle" class="T">Asking</text>
+  <text x="600" y="222" text-anchor="middle" class="s">password prompt is open</text>
+
+  <rect x="910" y="150" width="230" height="110" rx="55" class="open"/>
+  <text x="1025" y="198" text-anchor="middle" class="T">Open</text>
+  <text x="1025" y="222" text-anchor="middle" class="s">host has loaded the area</text>
+
+  <!-- locked -> asking -->
+  <path d="M290,180 L482,180" class="ln" marker-end="url(#a)"/>
+  <text x="386" y="130" text-anchor="middle" class="lab">account allowed + valid</text>
+  <text x="386" y="148" text-anchor="middle" class="lab">token found + not cooling down</text>
+
+  <!-- asking -> locked -->
+  <path d="M485,232 L293,232" class="lr" marker-end="url(#r)"/>
+  <text x="389" y="256" text-anchor="middle" class="labr">cancel → wait 60 s</text>
+  <text x="389" y="274" text-anchor="middle" class="labr">wrong password / drive changed → 20 s</text>
+  <text x="389" y="292" text-anchor="middle" class="labr">signed out meanwhile → no wait</text>
+
+  <!-- asking -> open -->
+  <path d="M715,205 L907,205" class="ln" marker-end="url(#a)"/>
+  <text x="811" y="168" text-anchor="middle" class="lab">token re-verified,</text>
+  <text x="811" y="186" text-anchor="middle" class="lab">password matches, host opens</text>
+
+  <!-- open -> locked -->
+  <path d="M1025,260 C1025,360 175,360 175,263" class="lr" marker-end="url(#r)"/>
+  <text x="600" y="366" text-anchor="middle" class="labr">device removed · token replaced, malformed or no longer valid (expired, key deprecated)</text>
+  <text x="600" y="386" text-anchor="middle" class="labr">account no longer allowed · sign-out or exit (lock_all)</text>
+
+  <!-- what locking does -->
+  <rect x="60" y="440" width="1080" height="118" rx="12" class="box"/>
+  <text x="80" y="468" class="lab" font-weight="700">What "locked" means in this library</text>
+  <text x="80" y="492" class="s">The monitor drops the grant and calls on_lock(scope, handle, reason). Re-inserting the same device is picked up at once;</text>
+  <text x="80" y="512" class="s">the waits apply only after a cancel or a failure. Closing screens and refusing further data operations is the host's job.</text>
+  <text x="80" y="538" class="n">Removal is noticed on the next tick, not instantly. 60 s and 20 s are configured defaults, not measurements.</text>
+</svg>

@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+
+# Keys, tokens and vault data must never be committed.
+*.pem
+*.key
+.tetherlock_access.*.json
+.tetherlock_vault/
+trusted_keys.json
+*.db
